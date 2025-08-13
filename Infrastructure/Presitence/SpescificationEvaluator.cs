@@ -20,12 +20,22 @@ namespace Presistence
             where TEntity : BaseEntity<TKey>
         {
             var query = inputQuery;
-           if (spec.Criateria is not null)
-           {
-                query = query.Where(spec.Criateria);
-           }
 
-             query = spec.IncludeExpressions.Aggregate(query, (currentQuery, includeExpression) => currentQuery.Include(includeExpression));
+            if (spec.Criateria is not null)
+                query = query.Where(spec.Criateria);
+
+            if (spec.OrderBy is not null)
+            {
+                query = query.OrderBy(spec.OrderBy);
+            }
+            else if (spec.OrderByDescending is not null)
+                {
+                query = query.OrderByDescending(spec.OrderByDescending);
+            }
+
+
+
+            query = spec.IncludeExpressions.Aggregate(query, (currentQuery, includeExpression) => currentQuery.Include(includeExpression));
 
 
 

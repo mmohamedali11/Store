@@ -12,7 +12,7 @@ namespace Domain.Models
         public string Description { get; set; }
         public string PictureUrl { get; set; }
         public decimal price { get; set; }
-
+        //public object Price { get; set; }
 
         public int BrandId { get; set; }//FK
         public ProductBrand ProductBrand { get; set; }//Navigational Property
