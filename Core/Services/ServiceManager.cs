@@ -11,6 +11,8 @@ namespace Services
 {
     public class ServiceManager(IUnitOfWork unitOfWork, IMapper mapper) : IServiceManager
     {
-        public IProductService productService { get;set;} = new ProductService(unitOfWork, mapper);
+        public IProductService productService { get; set; } = new ProductService(unitOfWork, mapper);
+        public IOrderService orderService { get; set; } = new OrderService(unitOfWork, mapper);  // ADD THIS LINE
+
     }
 }
