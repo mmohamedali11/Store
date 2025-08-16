@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Domain.Contracts;
+using Domain.Exceptions;
 using Domain.Models;
 using Services.Abstraction;
 using Services.Specifications;
@@ -16,25 +17,32 @@ namespace Services
     {
         
 
-        public async Task<IEnumerable<ProductResultDto>> GetAllProductsAsync(int? brandId, int? typeId, string? sort)
+        public async Task<PaginationResponse<ProductResultDto>> GetAllProductsAsync(ProductSpecificationsParamters specParams)
           {
 
-             var spec = new ProductWithBrandsAndTypesSpecifications(brandId, typeId,sort );
-
-
+             var spec = new ProductWithBrandsAndTypesSpecifications(specParams);  
             //Get all products Throught ProductRepository
-            var products = await unitOfWork.GetRepository<Product,int>().GetAllAsync(spec   );
+            var products = await unitOfWork.GetRepository<Product,int>().GetAllAsync(spec);
+
+            var result = mapper.Map< IEnumerable<ProductResultDto>>(products);
+
+            var specCount = new ProductWithCountSpecifications(specParams);
+
+            var count = await unitOfWork.GetRepository<Product, int>().CountAsync(specCount); 
+
+            //var count = products.Count();
 
             //Mapping IEnumerable<Product> To IEnumerable<ProductResultDto> : AutoMapper
-           var result = mapper.Map< IEnumerable<ProductResultDto>>(products);
-            return result;
+
+
+            return new PaginationResponse<ProductResultDto>(specParams.pageIndex,specParams.pageSize,count,result);
         }
 
         public async Task<ProductResultDto?> GetProductByIdAsync(int id)
         {
             var spec = new ProductWithBrandsAndTypesSpecifications(id);
             var product = await unitOfWork.GetRepository<Product, int>().GetAsync(spec);
-            if(product is null) return null; 
+            if(product is null) throw new ProductNotFoundException(id);    
             var result = mapper.Map<ProductResultDto>(product);
             return result;
         }

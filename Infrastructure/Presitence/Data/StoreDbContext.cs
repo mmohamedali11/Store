@@ -1,4 +1,4 @@
-﻿     using Domain.Models;
+﻿using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Presistence;
 using System;
@@ -26,9 +26,8 @@ namespace Presitence.Data
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AssemblyRefernce).Assembly);  
             base.OnModelCreating(modelBuilder);
 
-
-
             //modelBuilder.Entity<Product>().HasData(new Product() { });
+
         }
 
     }

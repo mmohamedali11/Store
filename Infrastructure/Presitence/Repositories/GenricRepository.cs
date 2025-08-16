@@ -75,10 +75,18 @@ namespace Presistence.Repositories
         public async Task<TEntity?> GetAsync(ISpecifications<TEntity, TKey> spec)
         {
           return await ApplySpecification(spec).FirstOrDefaultAsync();
-        } 
+        }
+
+        public async Task<int> CountAsync(ISpecifications<TEntity, TKey> spec)
+        {
+            return await ApplySpecification(spec).CountAsync();
+        }
+
         private IQueryable<TEntity> ApplySpecification(ISpecifications<TEntity,TKey> spec )
         {
             return SpescificationEvaluator.GetQuery(_context.Set<TEntity>(), spec); 
         }
+
+       
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Domain.Models;
+using Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,21 +16,22 @@ namespace Services.Specifications
             ApplyIncludes();
         }
 
-        public ProductWithBrandsAndTypesSpecifications(int? brandId, int? typeId, string? sort)
+        public ProductWithBrandsAndTypesSpecifications(ProductSpecificationsParamters  specParams )
             : base
 
             (
 
                 p =>
-                    (!brandId.HasValue || p.BrandId == brandId) &&
-                         (!typeId.HasValue || p.TypeId == typeId)
+                      (string.IsNullOrEmpty(specParams.Search) || p.Name.ToLower().Contains(specParams.Search.ToLower()))&&
+                    (!specParams.BrandId.HasValue || p.BrandId == specParams.BrandId) &&
+                         (!specParams.TypeId.HasValue || p.TypeId == specParams.TypeId)
             )
 
 
         {
             ApplyIncludes();
-            ApplySorting(sort);
-
+            ApplySorting(specParams.Sort);
+            ApplyPagination(specParams.pageIndex,specParams.pageSize);
 
         }
         private void ApplyIncludes()
