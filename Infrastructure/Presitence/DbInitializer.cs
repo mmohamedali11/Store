@@ -1,6 +1,7 @@
 ﻿    using Domain.Contracts;
 using Domain.Models;
 using Domain.Models.Identity;
+using Domain.Models.OrderModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Presistence.Identity;
@@ -88,6 +89,19 @@ namespace Presistence
                     }
                 }
 
+                if (!_context.DeliveryMethods.Any())
+                {
+                    var delivryData = await File.ReadAllTextAsync(@"..\Infrastructure\Presitence\Data\Seeding\delivery.json");
+
+                    var deliveryMethods  = JsonSerializer.Deserialize<List<DeliveryMethod>>(delivryData);
+
+                    if (deliveryMethods is not null && deliveryMethods.Any())
+                    {
+                        await _context.DeliveryMethods.AddRangeAsync(deliveryMethods);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+
 
                 //Seeding ProductTypes From Json File
                 //1.Read All Data From Types Json File as string
@@ -101,12 +115,14 @@ namespace Presistence
             }
             catch (Exception)
             {
+                
 
-                throw;
+                throw; 
             }
-
-
         }
+
+
+        
 
         public async Task InitializeIdentityAsync()
         {

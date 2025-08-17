@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Attributes;
 using Services.Abstraction;
@@ -23,6 +24,7 @@ namespace Presentation
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
         [Cache(100)]
+       // [Authorize]
         public async Task<ActionResult<PaginationResponse<ProductResultDto>>> GetAllProducts([FromQuery]ProductSpecificationsParamters specParams)
          {
             var result = await serviceManager.productService.GetAllProductsAsync(specParams);
